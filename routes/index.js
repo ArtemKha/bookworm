@@ -1,13 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var User = require('../models/user');
+var express = require('express')
+var router = express.Router()
+var User = require('../models/user')
+const mid = require('../middleware')
 
-router.get('/profile', (req, res, next) => {
-  if (!req.session.userId) {
-    const err = new Error('Yor are not authorize to view this page.')
-    err.status = 403
-    return next(err)
-  }
+router.get('/profile', mid.loggedIn, (req, res, next) => {
   User.findById(req.session.userId)
       .exec((err, user) => {
         if (err) {
@@ -19,7 +15,7 @@ router.get('/profile', (req, res, next) => {
       })
 })
 
-router.get('/login', (req, res, next) => {
+router.get('/login', mid.loggedOut, (req, res, next) => {
   return res.render('login', { title: 'Log In' })
 })
 
@@ -43,7 +39,7 @@ router.post('/login', (req, res, next) => {
         err.status = 401
         return next(err)
       } else {
-        req.session.userId = user._id;
+        req.session.userId = user._id
         return res.redirect('./profile')
       }
     })
@@ -54,7 +50,7 @@ router.post('/login', (req, res, next) => {
   }
 })
 
-router.get('/register', (req, res, next) => {
+router.get('/register', mid.loggedOut, (req, res, next) => {
   return res.render('register', { title: 'Sing Up' })
 })
 
@@ -81,7 +77,7 @@ router.post('/register', (req, res, next) => {
       if (err) {
         return next(err)
       } else {
-        req.session.userId = user._id;
+        req.session.userId = user._id
         return res.redirect('/profile')
       }
     })
@@ -94,17 +90,17 @@ router.post('/register', (req, res, next) => {
 
 // GET /
 router.get('/', function(req, res, next) {
-  return res.render('index', { title: 'Home' });
-});
+  return res.render('index', { title: 'Home' })
+})
 
 // GET /about
 router.get('/about', function(req, res, next) {
-  return res.render('about', { title: 'About' });
-});
+  return res.render('about', { title: 'About' })
+})
 
 // GET /contact
 router.get('/contact', function(req, res, next) {
-  return res.render('contact', { title: 'Contact' });
-});
+  return res.render('contact', { title: 'Contact' })
+})
 
-module.exports = router;
+module.exports = router
