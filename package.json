@@ -8,9 +8,12 @@
     "start": "node ./app"
   },
   "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.13.3",
     "express": "^4.13.4",
+    "express-session": "^1.15.5",
     "mongoose": "^4.11.7",
+    "node-pre-gyp": "^0.6.36",
     "pug": "^2.0.0-beta2"
   },
   "license": "MIT"
