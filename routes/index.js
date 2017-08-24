@@ -2,8 +2,37 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
 
+router.get('/profile', (req, res, next) => {
+  if (!req.session.userId) {
+    const err = new Error('Yor are not authorize to view this page.')
+    err.status = 403
+    return next(err)
+  }
+  User.findById(req.session.userId)
+      .exec((err, user) => {
+        if (err) {
+          next(err)
+        } else {
+          return res.render('profile',
+            { title: 'Profile', name: user.name, favorite: user.favoriteBook })
+        }
+      })
+})
+
 router.get('/login', (req, res, next) => {
   return res.render('login', { title: 'Log In' })
+})
+
+router.get('/logout', (req, res, next) => {
+  if (req.session) {
+    req.session.destroy(function(err) {
+      if (err) {
+        return next(err)
+      } else {
+        return res.redirect('/')
+      }
+    })
+  }
 })
 
 router.post('/login', (req, res, next) => {

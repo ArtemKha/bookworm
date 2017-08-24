@@ -10,6 +10,11 @@ app.use(session({
   saveUninitialized: false
 }))
 
+app.use(function (req, res, next) {
+  res.locals.currentUser = req.session.userId
+  next()
+})
+
 mongoose.connect('mongodb://localhost:27017/bookworm')
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
